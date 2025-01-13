@@ -41,3 +41,48 @@ class LandingAPI(APIView):
 	        
          # Devuelve el id del objeto guardado
          return Response({"id": new_resource.key}, status=status.HTTP_201_CREATED)
+     
+class LandingAPIDetail(APIView):
+
+     name = 'Landing Detail API'
+
+     collection_name = 'data'
+
+     def get(self, request, pk):
+         
+        ref = db.reference(f'{self.collection_name}/{pk}')
+		    
+        data = ref.get()
+        
+        if data is not None:
+            return Response(data, status=status.HTTP_200_OK)
+            
+        return Response(None, status=status.HTTP_404_NOT_FOUND)
+
+     def put(self, request, pk):
+        if not request.data:
+             return Response(None, status=status.HTTP_400_BAD_REQUEST)
+     
+        ref = db.reference(f'{self.collection_name}/{pk}')
+        
+        data = ref.get()
+        
+        if data is not None:
+            ref.update(request.data)
+            
+            return Response(None, status=status.HTTP_200_OK)
+            
+        return Response(data, status=status.HTTP_404_NOT_FOUND)
+    
+
+     def delete(self, request, pk):
+        ref = db.reference(f'{self.collection_name}/{pk}')
+        
+        data = ref.get()
+        
+        if data is not None:
+            ref.delete()
+            
+            return Response(None, status=status.HTTP_200_OK)
+            
+        return Response(data, status=status.HTTP_404_NOT_FOUND)
