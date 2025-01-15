@@ -10,6 +10,9 @@ import json
 from datetime import datetime
 from collections import Counter
 
+# Importe el decorador login_required
+from django.contrib.auth.decorators import login_required, permission_required
+
 # Function to convert date string to datetime object
 def convert_date(date_str):
     # Remove spaces and periods from 'a. m.' and 'p. m.'
@@ -22,6 +25,11 @@ def extract_date(date_str):
     date_str = date_str.replace(" a. m.", " AM").replace(" p. m.", " PM")
     return datetime.strptime(date_str, '%d/%m/%Y, %I:%M:%S %p').date()
 
+
+
+# Restricción de acceso con @login_required y permisos con @permission_required
+@login_required
+@permission_required('main.index_viewer', raise_exception=True)
 def index(request):
      # Arme el endpoint del REST API
      current_url = request.build_absolute_uri()
